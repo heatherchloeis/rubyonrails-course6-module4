@@ -39,6 +39,30 @@
            maxlength="4000"/>
     <span class="invalid">{{$ctrl.item.errors.notes}}</span>
   </div>
+  <div class="thing-tags row col-lg-12">
+    <label class="col-xs-3">Related Tags:</label>
+    <ul class="thing-tags col-xs-9">
+      <li ng-repeat="tt in $ctrl.tags">
+        <input type="checkbox"               
+               name="tag-delete"
+               ng-model="tt.toRemove"
+               ng-show="$ctrl.authz.canRemoveTag"
+               value="{{tt.id}}">
+        <div class="tag-delete glyphicon glyphicon-remove"
+             ng-show="tt.toRemove"></div>
+        <div class="glyphicon glyphicon-asterisk"
+             ng-hide="tt.toRemove"></div>
+        <a data-ui-sref="tags({id:tt.tag_id})">
+          <span class="id tag_id">{{tt.tag_id}}</span>
+          <label class="tag-keyword"
+                 ng-show="tt.tag_keyword">{{tt.tag_keyword}}</label>
+          <label class="tag-keyword"
+                 ng-hide="tt.tag_keyword">(no keyword {{tt.tag_id}})</label>
+        </a>
+      </li>
+    </ul>
+    <span class="invalid">{{$ctrl.item.errors.tags}}</span>
+  </div>
 
   <div class="thing-images row col-lg-12">
     <label class="col-xs-3">Related Images:</label>
@@ -94,6 +118,13 @@
                    !thingform['thing-desc'].$dirty && 
                    !thingform['thing-notes'].$dirty)"
                 ng-click="$ctrl.update()">Update Thing</button>
+        <button name="thing-tagss-update"
+                type="submit"          
+                data-ng-show="$ctrl.haveDirtyLinks() &&
+                  (!thingform['thing-name'].$dirty && 
+                   !thingform['thing-desc'].$dirty && 
+                   !thingform['thing-notes'].$dirty)"
+                ng-click="$ctrl.updateTagLinks()">Update Tag Links</button>  
         <button name="thing-images-update"
                 type="submit"          
                 data-ng-show="$ctrl.haveDirtyLinks() &&

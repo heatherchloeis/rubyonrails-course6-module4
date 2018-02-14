@@ -1,0 +1,69 @@
+<form class="tag-form row" name="tagform">
+  <span class="tag_id id">{{$ctrl.item.id}}</span>
+  <span class="invalid">{{$ctrl.item.errors.full_messages}}</span>
+
+  <div class="tag-keyword row col-lg-12">
+    <label class="col-xs-3">Keyword:</label>
+    <input class="col-xs-9"
+           name="tag-keyword" 
+           ng-model="$ctrl.item.keyword" 
+           ng-readonly="!$ctrl.authz.canUpdate"
+           maxlength="20"
+           pattern=".{3,}" title="3 character minimum for Keyword"/>
+    <span class="invalid">{{$ctrl.item.errors.name}}</span>
+  </div>
+
+  <div class="tag-things row col-lg-12"
+       ng-show="$ctrl.item.id">
+    <label class="col-xs-3">Related Things:</label>
+    <ul class="tag-things col-xs-9">
+      <li ng-repeat="tt in $ctrl.things | orderBy:'keyword'">
+        <a data-ui-sref="things({id:tt.thing_id})">
+          <span class="id thing_id">{{tt.thing_id}}</span>
+          {{tt.thing_name}}</a>
+      </li>
+    </ul>
+    <span class="invalid">{{$ctrl.item.errors.thing_tags}}</span>
+  </div>
+
+  <div class="linkable-tag-things row col-lg-12"
+       ng-show="$ctrl.linkable_tag_things.length>0 &&
+                $ctrl.authz.authenticated">
+    <label class="col-xs-3">Linkable Things:</label>
+    <div class="link-things" class="col-xs-9">
+      <select name="linkable-tag-things" 
+              ng-model="$ctrl.selected_linkables"               
+              multiple>
+        <option ng-repeat="thing in $ctrl.linkable_tag_things | orderBy:'name'"
+                value="{{thing.id}}">{{thing.name}}</option>
+      </select>
+    </div>
+    <span class="invalid">{{$ctrl.item.errors.linkable_tag_things}}</span>
+  </div>
+  
+  <div class="tag-controls">
+  	<span ng-show="$ctrl.authz.authenticated">
+      <button name="tag-create"
+              ng-show="!$ctrl.item.id && $ctrl.authz.canCreate"
+              type="submit"
+              ng-disabled="tagform.$invalid"
+              ng-click="$ctrl.create()">Create Tag</button>
+
+      <span ng-show="$ctrl.item.id">
+        <button name="tag-update"
+                type="submit"
+                ng-show="!$ctrl.authz.canUpdate" 
+                ng-disabled="$ctrl.selected_linkables.length==0"
+                ng-click="$ctrl.linkTagThings()">Link to Things</button>
+        <button name="tag-delete"
+                type="submit"
+                ng-show="$ctrl.authz.canDelete" 
+                ng-click="$ctrl.remove()">Delete Tag</button>
+      </span>
+    </span>
+    <button name="tag-clear"
+            type="submit"
+            ng-show="$ctrl.item.id || tagform.$dirty"
+            ng-click="$ctrl.clear()">Clear Tag</button>
+  </div>
+</form>

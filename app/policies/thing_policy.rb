@@ -39,6 +39,21 @@ class ThingPolicy < ApplicationPolicy
     organizer_or_admin?
   end
 
+  def get_linkable_tags?
+    true
+  end
+
+  def get_tags?
+    true
+  end
+
+  def add_tag?
+    member_or_organizer?
+  end
+  def remove_tag?
+    organizer_or_admin?
+  end
+
   class Scope < Scope
     def user_roles members_only=true, allow_admin=true
       include_admin=allow_admin && @user && @user.is_admin?
